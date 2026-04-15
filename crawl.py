@@ -54,7 +54,7 @@ for site in targets:
             
             # 이전 기록과 비교
             if history.get(site["name"]) != latest_title:
-                send_telegram(f"🔔 [{site['name']}] 새 글 발견!\n제목: {latest_title}\n바로가기: {site['url']}")
+                send_discord(f"🔔 [{site['name']}] 새 글 발견!\n제목: {latest_title}\n바로가기: {site['url']}")
             
             new_history.append(f"{site['name']}||{latest_title}")
         else:

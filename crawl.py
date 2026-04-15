@@ -11,48 +11,50 @@ def send_discord(text):
         data = {"content": text.strip()}
         requests.post(webhook_url, json=data)
 
-KEYWORDS = ["서울", "부산", "행복주택","모집"]
 
-# 1. 모니터링할 사이트 리스트 (이름, URL, CSS 셀렉터)
-# 사이트가 늘어나면 아래 리스트에 한 줄씩 추가만 하세요!
-targets = [
-   {
-        "name": "청년안심주택", 
-        "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/list.do?menuNo=400008", 
-        "selector": "#boardList tr:nth-of-type(1) td.align_left a" 
-    },
-   {
-        "name": "LH임대주택공고", 
-        "url": "https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do?viewType=srch", 
-        "selector": "#srchForm > section:nth-child(16) > div.bbs_ListA > table > tbody > tr:nth-child(1) > td.mVw.bbs_tit > a > span" 
-    },
-   {
-        "name": "SH주택분양모집공", 
-        "url": "https://www.i-sh.co.kr/app/lay2/program/S48T1581C1617/www/brd/m_244/list.do", 
-        "selector": "#listTb > table > tbody > tr:nth-child(1) > td.txtL > a" 
-    }
-]
+# 1. 키워드 파일(keywords.txt) 읽기
+KEYWORDS = []
+if os.path.exists('keywords.txt'):
+    with open('keywords.txt', 'r', encoding='utf-8') as f:
+        KEYWORDS = [line.strip() for line in f if line.strip()]
+else:
+    # 파일이 없을 경우 대비한 기본값
+    KEYWORDS = ["서울", "부산", "행복주택","모집"]
 
-# 이전 기록 읽기 (파일이 없으면 빈 딕셔너리 생성)
+
+# 2. 타겟 파일(targets.csv) 읽기
+targets = []
+try:
+    with open('targets.csv', mode='r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            targets.append(row)
+except Exception as e:
+    print(f"CSV 읽기 에러: {e}")
+
+
+# 3. 이전 기록 읽기 (파일이 없으면 빈 딕셔너리 생성)
 history_file = "last_posts.txt"
 history = {}
 if os.path.exists(history_file):
     with open(history_file, "r", encoding="utf-8") as f:
         for line in f:
             if "||" in line:
-                site_name, post_title = line.strip().split("||")
-                history[site_name] = post_title
+                parts = line.strip().split("||")
+                if len(parts) == 2:
+                    history[parts[0]] = parts[1]
 
 new_history = []
 
-# 2. 반복문을 돌며 각 사이트 확인
+# 4. 크롤링 시작
 for site in targets:
     try:
-        response = requests.get(site["url"], timeout=10)
+        response = requests.get(site["url"], timeout=15)
         soup = BeautifulSoup(response.text, 'html.parser')
         
         # 첫 번째 게시글 추출
         element = soup.select_one(site["selector"])
+        
         if element:
             # [수정 포인트] 모든 줄바꿈(\n), 탭(\t), 연속된 공백을 단일 공백으로 치환하고 앞뒤 공백 제거
             raw_title = element.get_text(separator=" ", strip=True)

@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import re # 정규표현식 추가
+import csv
 
 
 def send_discord(text):

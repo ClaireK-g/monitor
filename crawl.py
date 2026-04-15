@@ -19,7 +19,7 @@ targets = [
     },
    {
         "name": "LH임대주택공고", 
-        "url": "https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do", 
+        "url": "https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do?viewType=srch", 
         "selector": "#srchForm > section:nth-child(16) > div.bbs_ListA > table > tbody > tr:nth-child(1) > td.mVw.bbs_tit > a > span" 
     },
    {

@@ -9,7 +9,12 @@ def send_telegram(text):
         url = f"https://api.telegram.org/bot{token}/sendMessage"
         params = {'chat_id': chat_id, 'text': text}
         requests.get(url, params=params)
-
+def send_discord(text):
+    webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+    if webhook_url:
+        data = {"content": text}
+        requests.post(webhook_url, json=data)
+        
 # 1. 모니터링할 사이트 리스트 (이름, URL, CSS 셀렉터)
 # 사이트가 늘어나면 아래 리스트에 한 줄씩 추가만 하세요!
 targets = [

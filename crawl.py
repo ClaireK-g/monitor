@@ -1,14 +1,18 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+import re # 정규표현식 추가
 
 
 def send_discord(text):
     webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
+    # 메시지가 너무 길어지는 것을 방지하기 위해 strip 적용
     if webhook_url:
-        data = {"content": text}
+        data = {"content": text.strip()}
         requests.post(webhook_url, json=data)
-        
+
+KEYWORDS = ["서울", "부산"]
+
 # 1. 모니터링할 사이트 리스트 (이름, URL, CSS 셀렉터)
 # 사이트가 늘어나면 아래 리스트에 한 줄씩 추가만 하세요!
 targets = [
@@ -50,18 +54,19 @@ for site in targets:
         # 첫 번째 게시글 추출
         element = soup.select_one(site["selector"])
         if element:
-            latest_title = element.get_text().strip() # 텍스트 추출 시점에 strip() 적용
+            # [수정 포인트] 모든 줄바꿈(\n), 탭(\t), 연속된 공백을 단일 공백으로 치환하고 앞뒤 공백 제거
+            raw_title = element.get_text(separator=" ", strip=True)
+            latest_title = " ".join(raw_title.split())
+            # 비교 시에도 양쪽 공백 제거 후 비교
+            prev_title = history.get(site["name"], "").strip()
             
-            # 이전 기록과 비교
-            if history.get(site["name"], "").strip() != latest_title:
-                # 중복이 아님을 확신할 때만 알림 발송
+            if prev_title != latest_title:
                 if any(kw in latest_title for kw in KEYWORDS):
-                send_discord(f"🔔 [{site['name']}] 새 글 발견!\n제목: {latest_title}\n바로가기: {site['url']}")
+                    send_discord(f"🔔 **[{site['name']}]** 새글발견!\n제목: {latest_title}\n바로가기: {site['url']}")
             
             new_history.append(f"{site['name']}||{latest_title}")
         else:
             new_history.append(f"{site['name']}||{history.get(site['name'], 'N/A')}")
-            
     except Exception as e:
         print(f"{site['name']} 크롤링 중 오류 발생: {e}")
         new_history.append(f"{site['name']}||{history.get(site['name'], 'N/A')}")

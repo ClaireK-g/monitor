@@ -5,20 +5,23 @@ on:
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
+env:
+  # 깃허브가 제안한 대로 Node.js 24 사용을 강제합니다.
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 여기에 권한 설정을 명시적으로 추가합니다.
     permissions:
       contents: write
       
     steps:
-      - uses: actions/checkout@v4 # v3에서 v4로 업데이트
+      - uses: actions/checkout@v4
       
       - name: Set up Python
-        uses: actions/setup-python@v5 # v4에서 v5로 업데이트
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11' # 최신 환경에 맞게 파이썬 버전도 살짝 높였습니다.
           
       - name: Install libraries
         run: pip install requests beautifulsoup4
@@ -32,7 +35,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          # 파일이 없으면 에러가 나지 않도록 터치해줍니다.
           touch last_posts.txt
           git add last_posts.txt
           git commit -m "Update last post" || echo "No changes to commit"

@@ -1,0 +1,4 @@
+name,url,selector
+청년안심주택,https://soco.seoul.go.kr/youth/bbs/BMSR00015/list.do?menuNo=400008,td.align_left a
+LH임대주택공고,https://apply.lh.or.kr/lhapply/apply/wt/wrt/selectWrtList.do?mi=1027,.p_title
+SH주택분양모집공고,https://www.i-sh.co.kr/app/lay2/program/S48T1581C1617/www/brd/m_244/list.do,td.txtL a

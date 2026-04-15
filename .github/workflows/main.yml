@@ -2,29 +2,38 @@ name: Run Crawler script
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # 30분마다 실행
-  workflow_dispatch:      # 우리가 수동으로 실행해볼 수 있게 하는 버튼
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 여기에 권한 설정을 명시적으로 추가합니다.
+    permissions:
+      contents: write
+      
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4 # v3에서 v4로 업데이트
+      
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # v4에서 v5로 업데이트
         with:
           python-version: '3.9'
+          
       - name: Install libraries
         run: pip install requests beautifulsoup4
+        
       - name: Run script
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: python crawl.py
+        
       - name: Update log
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add last_post.txt
-          git commit -m "Update last post" || echo "No changes"
+          # 파일이 없으면 에러가 나지 않도록 터치해줍니다.
+          touch last_posts.txt
+          git add last_posts.txt
+          git commit -m "Update last post" || echo "No changes to commit"
           git push

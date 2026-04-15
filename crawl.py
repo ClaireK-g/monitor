@@ -2,13 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-def send_telegram(text):
-    token = os.environ.get('TELEGRAM_TOKEN')
-    chat_id = os.environ.get('TELEGRAM_CHAT_ID')
-    if token and chat_id:
-        url = f"https://api.telegram.org/bot{token}/sendMessage"
-        params = {'chat_id': chat_id, 'text': text}
-        requests.get(url, params=params)
+'def send_telegram(text):
+'    token = os.environ.get('TELEGRAM_TOKEN')
+'    chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+'    if token and chat_id:
+'        url = f"https://api.telegram.org/bot{token}/sendMessage"
+'        params = {'chat_id': chat_id, 'text': text}
+'        requests.get(url, params=params)
 def send_discord(text):
     webhook_url = os.environ.get('DISCORD_WEBHOOK_URL')
     if webhook_url:

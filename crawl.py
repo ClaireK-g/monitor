@@ -11,7 +11,7 @@ def send_discord(text):
         data = {"content": text.strip()}
         requests.post(webhook_url, json=data)
 
-KEYWORDS = ["서울", "부산"]
+KEYWORDS = ["서울", "부산", "행복주택","모집"]
 
 # 1. 모니터링할 사이트 리스트 (이름, URL, CSS 셀렉터)
 # 사이트가 늘어나면 아래 리스트에 한 줄씩 추가만 하세요!
@@ -19,7 +19,7 @@ targets = [
    {
         "name": "청년안심주택", 
         "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/list.do?menuNo=400008", 
-        "selector": "#boardList > tr:nth-child(1) > td.align_left > a" 
+        "selector": "#boardList tr:nth-of-type(1) td.align_left a" 
     },
    {
         "name": "LH임대주택공고", 
@@ -60,10 +60,13 @@ for site in targets:
             # 비교 시에도 양쪽 공백 제거 후 비교
             prev_title = history.get(site["name"], "").strip()
             
-            if prev_title != latest_title:
+            if history.get(site["name"], "").strip() != latest_title:
+                # [중요] 서울 또는 부산 키워드가 있을 때만 디스코드로 발송
                 if any(kw in latest_title for kw in KEYWORDS):
-                    send_discord(f"🔔 **[{site['name']}]** 새글발견!\n제목: {latest_title}\n바로가기: {site['url']}")
-            
+                    send_discord(f"🔔 **[{site['name']}]** 맞춤 공고 발견!\n제목: {latest_title}\n링크: {site['url']}")
+                else:
+                    print(f"필터링됨 (키워드 없음): {latest_title}")
+                    
             new_history.append(f"{site['name']}||{latest_title}")
         else:
             new_history.append(f"{site['name']}||{history.get(site['name'], 'N/A')}")

@@ -50,10 +50,12 @@ for site in targets:
         # 첫 번째 게시글 추출
         element = soup.select_one(site["selector"])
         if element:
-            latest_title = element.text.strip()
+            latest_title = element.get_text().strip() # 텍스트 추출 시점에 strip() 적용
             
             # 이전 기록과 비교
-            if history.get(site["name"]) != latest_title:
+            if history.get(site["name"], "").strip() != latest_title:
+                # 중복이 아님을 확신할 때만 알림 발송
+                if any(kw in latest_title for kw in KEYWORDS):
                 send_discord(f"🔔 [{site['name']}] 새 글 발견!\n제목: {latest_title}\n바로가기: {site['url']}")
             
             new_history.append(f"{site['name']}||{latest_title}")

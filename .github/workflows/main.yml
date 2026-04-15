@@ -1,0 +1,30 @@
+name: Run Crawler script
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # 30분마다 실행
+  workflow_dispatch:      # 우리가 수동으로 실행해볼 수 있게 하는 버튼
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install libraries
+        run: pip install requests beautifulsoup4
+      - name: Run script
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python crawl.py
+      - name: Update log
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add last_post.txt
+          git commit -m "Update last post" || echo "No changes"
+          git push

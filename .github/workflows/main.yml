@@ -23,8 +23,9 @@ jobs:
         with:
           python-version: '3.11' # 최신 환경에 맞게 파이썬 버전도 살짝 높였습니다.
           
-      - name: Install libraries
-        run: pip install requests beautifulsoup4
+      - name: Install dependencies
+        run: |
+          pip install cloudscraper beautifulsoup4
         
       - name: Run script
         env:

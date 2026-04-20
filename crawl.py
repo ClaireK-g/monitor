@@ -1,4 +1,4 @@
-import requests
+import cloudscraper  # requests 대신 cloudscraper 사용
 from bs4 import BeautifulSoup
 import os
 import re # 정규표현식 추가
@@ -47,6 +47,9 @@ if os.path.exists(history_file):
 
 new_history = []
 
+# 크롤러 객체 생성
+scraper = cloudscraper.create_scraper()
+
 # crawl.py 수정 스니펫
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -56,8 +59,10 @@ headers = {
 # 4. 크롤링 시작
 for site in targets:
     try:
+        # scraper.get을 사용하면 보안 차단을 더 잘 우회합니다.
+        response = scraper.get(site["url"], timeout=20)
         # headers를 추가해서 사람인 척 접속합니다.
-        response = requests.get(site["url"], headers=headers, timeout=15)
+        # response = requests.get(site["url"], headers=headers, timeout=15)
         soup = BeautifulSoup(response.text, 'html.parser')
         
         # 첫 번째 게시글 추출

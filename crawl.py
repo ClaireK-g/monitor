@@ -59,13 +59,21 @@ headers = {
 # 4. 크롤링 시작
 for site in targets:
     try:
-        # scraper.get을 사용하면 보안 차단을 더 잘 우회합니다.
-        response = scraper.get(site["url"], timeout=20)
-        # headers를 추가해서 사람인 척 접속합니다.
-        # response = requests.get(site["url"], headers=headers, timeout=15)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        # 1. 청년안심주택 전용 API 로직
+        if site["name"] == "청년안심주택":
+            api_url = "https://soco.seoul.go.kr/youth/bbs/BMSR00015/list.do"
+            params = {"menuNo": "400008"}
+            response = scraper.post(api_url, data=params, timeout=20)
         
-        # 첫 번째 게시글 추출
+        # 2. 나머지 사이트 일반 크롤링 로직
+        else:
+            # scraper.get을 사용하면 보안 차단을 더 잘 우회합니다.
+            # response = scraper.get(site["url"], timeout=20)
+            # headers를 추가해서 사람인 척 접속합니다.
+            response = requests.get(site["url"], headers=headers, timeout=15)
+
+        # 3. 공통 데이터 추출 (BeautifulSoup)
+        soup = BeautifulSoup(response.text, 'html.parser')
         element = soup.select_one(site["selector"])
         
         if element:

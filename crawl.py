@@ -47,10 +47,17 @@ if os.path.exists(history_file):
 
 new_history = []
 
+# crawl.py 수정 스니펫
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
+
+        
 # 4. 크롤링 시작
 for site in targets:
     try:
-        response = requests.get(site["url"], timeout=15)
+        # headers를 추가해서 사람인 척 접속합니다.
+        response = requests.get(site["url"], headers=headers, timeout=15)
         soup = BeautifulSoup(response.text, 'html.parser')
         
         # 첫 번째 게시글 추출

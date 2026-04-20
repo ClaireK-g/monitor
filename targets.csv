@@ -1,5 +1,5 @@
 name,url,selector
-청년안심주택,https://soco.seoul.go.kr/youth/bbs/BMSR00015/list.do?menuNo=400008,#boardList tbody tr:first-child td.align_left a
+청년안심주택,https://soco.seoul.go.kr/youth/bbs/BMSR00015/list.do?menuNo=400008,div#boardList a
 LH알려드려,https://apply.lh.or.kr/lhapply/apply/noti/an/list.do?slBbsKdCd=03&mi=1079,#srchForm > section:nth-child(12) > div.bbs_ListA > table > tbody > tr:nth-child(1) > td.mVw.bbs_tit > a > span
 LH임대주택공고,https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do?mi=1026,#srchForm > section:nth-child(16) > div.bbs_ListA > table > tbody > tr:nth-child(1) > td.mVw.bbs_tit > a > span
 LH분양주택공고,https://apply.lh.or.kr/lhapply/apply/wt/wrtanc/selectWrtancList.do?mi=1027,#srchForm > section:nth-child(16) > div.bbs_ListA > table > tbody > tr:nth-child(1) > td.mVw.bbs_tit > a > span

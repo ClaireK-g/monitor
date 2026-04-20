@@ -35,7 +35,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          touch last_posts.txt
           git add last_posts.txt
           git commit -m "Update last post" || echo "No changes to commit"
+          # push 하기 전에 서버의 변경사항을 가져오고 합칩니다 (rebase)
+          git pull --rebase origin main
           git push

@@ -20,7 +20,7 @@ if os.path.exists('keywords.txt'):
         KEYWORDS = [line.strip() for line in f if line.strip()]
 else:
     # 파일이 없을 경우 대비한 기본값
-    KEYWORDS = ["서울", "부산", "행복주택","모집"]
+    KEYWORDS = [" "]
 
 
 # 2. 타겟 파일(targets.csv) 읽기
